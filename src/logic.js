@@ -1,4 +1,5 @@
 const squares = document.querySelectorAll(".square");
+console.log(squares);
 let currentPlayer = "x";
 let gameOver = false;
 let board = ["", "", "", "", "", "", "", "", ""];
@@ -15,6 +16,7 @@ function everysquare(square, index) {
             return;
         }
         if (board[index] !== "") {
+            document.getElementById("message").textContent="Oopsie! That slot is already taken. "
             return;
         }
         square.textContent = currentPlayer;
@@ -23,10 +25,12 @@ function everysquare(square, index) {
             document.getElementById("message").textContent = currentPlayer.toUpperCase() + " wins!";
             markWinningSquares();
             gameOver = true;
-        } else if (board.indexOf("") === -1) {
+        } 
+        else if (board.indexOf("") === -1) {
             document.getElementById("message").textContent = "It's a tie!";
             gameOver = true;
-        } else {
+        } 
+        else {
             currentPlayer = currentPlayer === "x" ? "o" : "x";
             document.getElementById("message").textContent = "It's " + currentPlayer.toUpperCase() + "'s turn";
         }

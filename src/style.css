@@ -34,6 +34,7 @@ h1 {
 
 .x {
     color: #f00;
+    font-style: italic;
 }
 
 .o {
@@ -41,11 +42,12 @@ h1 {
 }
 
 .win {
-    background-color: #6aff6a;
+    background-color: #00f300;
 }
 
 #message {
     font-size: 24px;
     text-align: center;
     margin: 30px 0;
+    font-optical-sizing: 24px   ;
 }
