@@ -2,330 +2,43 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tic Tac Toe</title>
-    <style>
-            body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-image: url('https://mir-s3-cdn-cf.behance.net/project_modules/1400/2f17d58321701.56d7b748968f9.jpg');
-            background-size: fill;
-            transform: translateY(20%);
-            background-position: 20%;
-            background-position: center;
-        }
-
-        h1 {
-            text-align: center;
-        }
-
-        #board {
-            display: flex;
-            flex-wrap: wrap;
-            width: 300px;
-            height: 300px;
-            margin: 50px auto 0;
-            border: 3px solid #333;
-        }
-
-        .square {
-            width: 100px;
-            height: 100px;
-            border: 1px solid #333;
-            font-size: 60px;
-            text-align: center;
-            line-height: 100px;
-            cursor: pointer;
-            box-sizing: border-box;
-        }
-
-        .square:hover {
-            background-color: #ddd;
-        }
-
-        .x {
-            color: #f00;
-        }
-
-        .o {
-            color: #00f;
-        }
-
-        .win {
-            background-color: #6aff6a;
-        }
-
-        #message {
-            font-size: 24px;
-            text-align: center;
-            margin: 30px 0;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <script defer src="logic.js"></script>
+  <title>Tic Tac Toe</title>
 </head>
 
 <body>
-    <h1 center>Tic Tac Toe</h1>
-    <audio autoplay>
-        <source src="pop.mp3" type="audio/mp3" />
-    </audio>
 
-    <div id="board">
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
-        <div class="square"></div>
+  <h1 center>Tic Tac Toe</h1>
+  <div id="scoreboard">
+    <div>
+      <span class="playe">X</span>: <span id="xWins">0</span>
     </div>
-    <div id="message"></div>
+    <div>
+      <span class="player">O</span>: <span id="aiWins">0</span>
+    </div>
+  </div>
+  <div id="board">
+    <div class="square"></div>
+    <div class="square"></div>
+    <div class="square"></div>
+    <div class="square"></div>
+    <div class="square"></div>
+    <div class="square"></div>
+    <div class="square"></div>
+    <div class="square"></div>
+    <div class="square"></div>
+  </div>
+  <div id="message"></div>
+  <button onclick="restart()" class="button">Restart</button>
+  <button id="switchButton" class="button" onclick="switchGameMode()">Switch to AI</button>
+  <audio src="J-GARAGE POP Miracle Moon(お月様が中継局).mp3" autoplay loop>
+  </audio>
 
-    <script>const squares = document.querySelectorAll(".square");
-        let currentPlayer = "x";
-        let gameOver = false;
-        let board = ["", "", "", "", "", "", "", "", ""];
-        
-        function restart() {
-          document.getElementById("square1").innerHTML = "";
-          document.getElementById("square2").innerHTML = "";
-          document.getElementById("square3").innerHTML = "";
-          document.getElementById("square4").innerHTML = "";
-          document.getElementById("square5").innerHTML = "";
-          document.getElementById("square6").innerHTML = "";
-          document.getElementById("square7").innerHTML = "";
-          document.getElementById("square8").innerHTML = "";
-          document.getElementById("square9").innerHTML = "";
-        }
-        
-        for (let i = 0; i < squares.length; i++) {
-          addClickHandler(squares[i], i);
-        }
-        
-        function addClickHandler(square, index) {
-          square.addEventListener("click", function () {
-            if (gameOver || board[index] !== "") {
-              return;
-            }
-            square.textContent = currentPlayer;
-            board[index] = currentPlayer;
-        
-            if (checkForWin()) {
-              document.getElementById("message").textContent =
-                currentPlayer.toUpperCase() + " wins!";
-              markWinningSquares();
-              gameOver = true;
-            } else if (board.indexOf("") === -1) {
-              document.getElementById("message").textContent = "It's a tie!";
-              gameOver = true;
-            } else {
-              currentPlayer = currentPlayer === "x" ? "o" : "x";
-              document.getElementById("message").textContent =
-                "It's " + currentPlayer.toUpperCase() + "'s turn";
-              if (currentPlayer === "o") {
-                makeAIMove();
-              }
-            }
-          });
-        }
-        
-        function makeAIMove() {
-          const bestMove = brain();
-          console.log(bestMove);
-          board[bestMove] = currentPlayer;
-          squares[bestMove].textContent = currentPlayer;
-        
-          if (checkForWin()) {
-            document.getElementById("message").textContent =
-              currentPlayer.toUpperCase() + " wins!";
-            markWinningSquares();
-            gameOver = true;
-          } else if (board.indexOf("") === -1) {
-            document.getElementById("message").textContent = "It's a tie!";
-            gameOver = true;
-          } else {
-            currentPlayer = currentPlayer === "x" ? "o" : "x";
-            document.getElementById("message").textContent =
-              "It's " + currentPlayer.toUpperCase() + "'s turn";
-          }
-        }
-        
-        function checkForWin() {
-          const lines = [
-            [0, 1, 2],
-            [3, 4, 5],
-            [6, 7, 8],
-            [0, 3, 6],
-            [1, 4, 7],
-            [2, 5, 8],
-            [0, 4, 8],
-            [2, 4, 6],
-          ];
-        
-          for (let i = 0; i < lines.length; i++) {
-            const [a, b, c] = lines[i];
-            if (board[a] !== "" && board[a] === board[b] && board[a] === board[c]) {
-              return true;
-            }
-          }
-        
-          return false;
-        }
-        
-        function markWinningSquares() {
-          const lines = [
-            [0, 1, 2],
-            [3, 4, 5],
-            [6, 7, 8],
-            [0, 3, 6],
-            [1, 4, 7],
-            [2, 5, 8],
-            [0, 4, 8],
-            [2, 4, 6],
-          ];
-        
-          for (let i = 0; i < lines.length; i++) {
-            const [a, b, c] = lines[i];
-            if (board[a] !== "" && board[a] === board[b] && board[a] === board[c]) {
-              squares[a].classList.add("win");
-              squares[b].classList.add("win");
-              squares[c].classList.add("win");
-              break;
-            }
-          }
-        }
-        
-        function getRandomItem(arr) {
-          const randomIndex = Math.floor(Math.random() * arr.length);
-          const item = arr[randomIndex];
-          return item;
-        }
-        
-        function brain() {
-          let possibleMoves = [];
-          let cornerOpen = [];
-          let edgeOpen = [];
-          for (let i = 0; i < 9; i++) {
-            if (board[i] === "") {
-              possibleMoves.push(i);
-            }
-          }
-          let len = possibleMoves.length;
-        
-          const lines = [
-            [0, 1, 2], 
-            [2, 1, 0],
-            [2, 0, 1],
-            [1, 0, 2],
-            [0, 2, 1],
-            [1, 2, 0],
-            [3, 4, 5],
-            [5, 4, 3],
-            [3, 5, 4],
-            [4, 5, 3],
-            [5, 3, 4],
-            [4, 3, 5],
-            [6, 7, 8],
-            [8, 7, 6],
-            [7, 8, 6],
-            [6, 8, 7],
-            [7, 6, 8],
-            [8, 6, 7],
-            [0, 3, 6],
-            [6, 3, 0],
-            [3, 0, 6],
-            [6, 0, 3],
-            [3, 6, 0],
-            [0, 6, 3],
-            [1, 4, 7],
-            [7, 4, 1],
-            [4, 7, 1],
-            [1, 7, 4],
-            [4, 1, 7],
-            [7, 1, 4],
-            [2, 5, 8],
-            [8, 5, 2],
-            [2, 8, 5],
-            [5, 8, 2],
-            [8, 2, 5],
-            [5, 2, 8],
-            [0, 4, 8],
-            [8, 4, 0],
-            [8, 0, 4],
-            [4, 0, 8],
-            [4, 8, 0],
-            [0, 8, 4],
-            [2, 4, 6],
-            [6, 4, 2],
-            [4, 6, 2],
-            [2, 6, 4],
-            [4, 2, 6],
-            [6, 2, 4],
-            
-          ];
-        
-          for (let i = 0; i < lines.length; i++) {
-            const [a, b, c] = lines[i];
-        
-            if (board[a] == "o" && board[b] == "o" && board[c] == "") {
-              return c;
-            }
-            if (board[b] == "o" && board[c] == "o" && board[a] == "") {
-              return a;
-            }
-            if (board[a] == "o" && board[c] == "o" && board[b] == "") {
-              return b;
-            }
-            if (board[a] == "x" && board[b] == "x" && board[c] == "") {
-              return c;
-            }
-            if (board[b] == "x" && board[c] == "x" && board[a] == "") {
-              return a;
-            }
-            if (board[a] == "x" && board[c] == "x" && board[b] == "") {
-              return b;
-            }
-          }
-          for (let i = 0; i < len; i++) {
-            if (possibleMoves[i] === 4) {
-              return 4;
-            }
-          }
-          for (let i = 0; i < len; i++) {
-            if (
-              possibleMoves[i] === 0 ||
-              possibleMoves[i] === 2 ||
-              possibleMoves[i] === 6 ||
-              possibleMoves[i] === 8
-            ) {
-              cornerOpen.push(possibleMoves[i]);
-            }
-          }
-          console.log(cornerOpen);
-          if (cornerOpen.length > 0) {
-            return getRandomItem(cornerOpen);
-          }
-        
-          for (let i = 0; i < len; i++) {
-            if (
-              possibleMoves[i] === 1 ||
-              possibleMoves[i] === 3 ||
-              possibleMoves[i] === 5 ||
-              possibleMoves[i] === 7
-            ) {
-              edgeOpen.push(possibleMoves[i]);
-            }
-          }
-          console.log(edgeOpen);
-          if (edgeOpen.length > 0) {
-            return getRandomItem(edgeOpen);
-          }
-        }
-        </script>
 </body>
 
 </html>
